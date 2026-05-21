@@ -1,5 +1,11 @@
+"""
+Detection module for pendulum tracking.
+Provides functions to detect the pendulum mass in video frames.
+"""
+
 import cv2
 import numpy as np
+
 
 def detect_by_color(frame, lower_color, upper_color):
     """
@@ -12,7 +18,6 @@ def detect_by_color(frame, lower_color, upper_color):
         tuple: A tuple containing the bounding box coordinates (x1, y1, x2, y2) of the largest detected object and the modified frame with the bounding box drawn. 
                If no object is detected, returns (None, frame).
     """
-
     # Convert the frame to HSV color space
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     
@@ -37,6 +42,13 @@ def detect_by_color(frame, lower_color, upper_color):
 
 
 def detect_circle(frame):
+    """
+    Detects circles (pendulum mass) in a frame using Hough Circle Detection.
+    Args:
+        frame (numpy.ndarray): Input image frame in BGR color space.
+    Returns:
+        tuple: Bounding box (x1, y1, x2, y2) and modified frame with circle drawn, or (None, frame).
+    """
     # Convert the frame to grayscale
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     
@@ -73,11 +85,8 @@ def detect_object(video=0):
         tuple: The region of interest (ROI) where the object is detected, or None 
                if no object is detected.
     """
-
     # Open the video capture (0 for default webcam, or provide video file path)
     cap = cv2.VideoCapture(video)
-
-    # cap = cv2.VideoCapture("IMG_2585.MOV")
 
     if not cap.isOpened():
         print("Error: Could not open video source.")
@@ -113,6 +122,5 @@ def detect_object(video=0):
             return roi
         
 if __name__ == "__main__":
-
     roi = detect_object()
-    print("Washer detected at " + roi)
+    print("Washer detected at " + str(roi))

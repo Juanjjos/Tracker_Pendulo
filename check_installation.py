@@ -6,6 +6,7 @@ Run this before starting live tracking
 
 import sys
 import subprocess
+from tracker_utils import print_opencv_info, get_available_trackers
 
 def test_imports():
     """Test if all required packages are installed"""
@@ -63,39 +64,28 @@ def test_opencv_trackers():
     print("-" * 50)
     
     import cv2
+    from tracker_utils import get_available_trackers
     
-    trackers = {
-        "KCF": "cv2.TrackerKCF_create",
-        "CSRT": "cv2.legacy.TrackerCSRT_create",
-        "MOSSE": "cv2.legacy.TrackerMOSSE_create",
-    }
+    available = get_available_trackers()
     
-    failed = []
-    
-    for name, path in trackers.items():
-        try:
-            if "legacy" in path:
-                getattr(cv2.legacy, path.split(".")[-1].replace("_create", "") + "_create")()
-            else:
-                getattr(cv2, path.split(".")[-1])()
-            print(f"✓ {name:<20} OK")
-        except Exception as e:
-            try:
-                # Try legacy version
-                method_name = path.split(".")[-1]
-                getattr(cv2.legacy, method_name)()
-                print(f"✓ {name:<20} OK (legacy)")
-            except:
-                print(f"✗ {name:<20} FAILED")
-                failed.append(name)
-    
-    return len(failed) == 0, failed
+    if available:
+        for tracker in available:
+            print(f"✓ {tracker:<20} OK")
+        return True, []
+    else:
+        print("✗ No trackers available")
+        return False, ["All trackers"]
 
 def main():
     print("=" * 50)
     print("PENDULUM TRACKING SYSTEM - INSTALLATION CHECK")
     print("=" * 50)
     print()
+    
+    # Print OpenCV info
+    print("OpenCV Information:")
+    print("-" * 50)
+    print_opencv_info()
     
     # Test imports
     imports_ok, failed_imports = test_imports()
@@ -124,6 +114,9 @@ def main():
         print("Failed trackers:", failed_trackers or "None")
         print("\nPlease run:")
         print("  pip install --upgrade -r requirements.txt")
+        print("\nIf the problem persists:")
+        print("  pip uninstall opencv-python opencv-contrib-python")
+        print("  pip install opencv-contrib-python==4.10.0.106")
         return 1
 
 if __name__ == "__main__":

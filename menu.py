@@ -8,6 +8,7 @@ import subprocess
 import sys
 import os
 from pathlib import Path
+from tracker_utils import print_opencv_info
 
 def print_header():
     print("\n" + "=" * 70)
@@ -20,7 +21,8 @@ def print_menu():
     print("  2. Start live webcam tracking")
     print("  3. Process video file")
     print("  4. View help and examples")
-    print("  5. Exit")
+    print("  5. Check OpenCV installation")
+    print("  6. Exit")
     print()
 
 def run_validation():
@@ -194,7 +196,7 @@ def main():
         print_menu()
         
         try:
-            choice = input("Enter your choice (1-5): ").strip()
+            choice = input("Enter your choice (1-6): ").strip()
             
             if choice == "1":
                 success = run_validation()
@@ -221,6 +223,12 @@ def main():
                 show_help()
             
             elif choice == "5":
+                print("\n🔧 OpenCV Diagnostics")
+                print("=" * 70)
+                print_opencv_info()
+                print("=" * 70)
+            
+            elif choice == "6":
                 print("\n👋 Goodbye!")
                 sys.exit(0)
             

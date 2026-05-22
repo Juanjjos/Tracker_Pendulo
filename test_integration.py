@@ -19,6 +19,7 @@ import math
 import cv2
 import argparse
 from datetime import datetime
+from tracker_utils import create_tracker, print_opencv_info
 
 print("=" * 70)
 print("PENDULUM TRACKING PIPELINE - INTEGRATION TEST")
@@ -219,11 +220,12 @@ if args.mode == "live":
         print("  5. Press 'q' to stop tracking and save data")
         print("\n" + "-" * 70)
         
-        # Initialize OpenCV tracker (using KCF)
+        # Initialize OpenCV tracker
         try:
-            tracker = cv2.TrackerKCF_create()
-        except AttributeError:
-            tracker = cv2.legacy.TrackerKCF_create()
+            tracker = create_tracker("KCF")
+        except ValueError as e:
+            print(f"\n✗ Tracker error: {e}")
+            sys.exit(1)
         
         # Run live tracking
         results = live_track(tracker, video_src=0, hilo_length_cm=hilo_length, 
@@ -276,9 +278,10 @@ elif args.mode == "video":
         
         # Initialize OpenCV tracker
         try:
-            tracker = cv2.TrackerKCF_create()
-        except AttributeError:
-            tracker = cv2.legacy.TrackerKCF_create()
+            tracker = create_tracker("KCF")
+        except ValueError as e:
+            print(f"\n✗ Tracker error: {e}")
+            sys.exit(1)
         
         # Process video
         process_video(tracker, args.video, csv_output, ret=True, 

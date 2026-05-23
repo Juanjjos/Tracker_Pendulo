@@ -259,3 +259,14 @@ if __name__ == "__main__":
         import traceback
         traceback.print_exc()
         sys.exit(1)
+
+'''
+Citación: @misc{chiang2024opencvtracking,
+  author = {Jet Chiang},
+  title = {Automated Tracking And Analysis System for Pendulum Motion},
+  year = {2024},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/supreme-gg-gg/opencv-tracking}},
+}
+'''

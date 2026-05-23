@@ -4,6 +4,7 @@ from detection import detect_object
 import sys, pandas as pd, math, argparse, os
 from scipy.signal import savgol_filter
 from datetime import datetime
+from tracker_utils import create_tracker, print_opencv_info
 
 def live_track(tracker, video_src, hilo_length_cm=30, area_condition="sin_hojas", output_dir="./tracking_output"):
     """
@@ -184,6 +185,7 @@ def live_track(tracker, video_src, hilo_length_cm=30, area_condition="sin_hojas"
         print(f"⚠ Could not generate amplitude plot: {e}")
     
     return df, L_px, origin
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Live pendulum tracking with real-time data capture.")
 
@@ -226,16 +228,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # Create tracker
-    if args.tracker == "KCF":
-        tracker = cv2.TrackerKCF_create()
-    elif args.tracker == "CSRT":
-        tracker = cv2.legacy.TrackerCSRT_create()
-    elif args.tracker == "MOSSE":
-        tracker = cv2.legacy.TrackerMOSSE_create()
-    else:
-        tracker = cv2.TrackerKCF_create()
-
     print("=" * 70)
     print("LIVE PENDULUM TRACKING - REAL DATA CAPTURE")
     print("=" * 70)
@@ -247,10 +239,16 @@ if __name__ == "__main__":
     print("=" * 70)
 
     try:
+        tracker = create_tracker(args.tracker)
         live_track(tracker, args.source, 
                   hilo_length_cm=args.hilo_length,
                   area_condition=args.area_condition,
                   output_dir=args.output_dir)
+    except ValueError as e:
+        print(f"\n✗ Tracker error: {e}")
+        print("\nDiagnostics:")
+        print_opencv_info()
+        sys.exit(1)
     except KeyboardInterrupt:
         print("\n⚠ Interrupted by user")
         sys.exit(0)

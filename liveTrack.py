@@ -258,7 +258,7 @@ if __name__ == "__main__":
         traceback.print_exc()
         sys.exit(1)
 
-'''
+r'''
 Citación: @misc{chiang2024opencvtracking,
   author = {Jet Chiang},
   title = {Automated Tracking And Analysis System for Pendulum Motion},

@@ -100,8 +100,24 @@ def run_video_processing():
     
     video_path = input("\nEnter video file path: ").strip()
     
+    # Normalize path (remove quotes if present)
+    if video_path.startswith('"') and video_path.endswith('"'):
+        video_path = video_path[1:-1]
+    if video_path.startswith("'") and video_path.endswith("'"):
+        video_path = video_path[1:-1]
+    
+    # Convert forward slashes to backslashes on Windows
+    import platform
+    if platform.system() == "Windows":
+        video_path = video_path.replace("/", "\\")
+    
     if not os.path.exists(video_path):
         print(f"❌ File not found: {video_path}")
+        print(f"\n💡 Tips:")
+        print(f"   • Check if the path is correct")
+        print(f"   • On Windows, use backslashes (\\) or forward slashes (/) in paths")
+        print(f"   • Example: C:\\Videos\\pendulum.mp4")
+        print(f"   • Or drag and drop the file directly into the terminal")
         return False
     
     # Experiment selection

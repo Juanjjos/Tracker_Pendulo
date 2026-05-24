@@ -86,13 +86,23 @@ def detect_object(video=0):
                if no object is detected.
     """
     # Normalize video source for camera index strings
-    video_source = int(video) if isinstance(video, str) and video.isdigit() else video
+    video_source = video
+    if isinstance(video, str):
+        # Check if it's a camera index (single digit or integer string)
+        if video.isdigit():
+            video_source = int(video)
+        else:
+            # It's a file path - validate it exists
+            import os
+            if not os.path.exists(video):
+                raise FileNotFoundError(f"Video file not found: {video}\nPlease check the file path and try again.")
+            video_source = video
 
     # Open the video capture (0 for default webcam, or provide video file path)
     cap = cv2.VideoCapture(video_source)
 
     if not cap.isOpened():
-        raise RuntimeError("Error: Could not open video source.")
+        raise RuntimeError("Error: Could not open video source. Please check if the file exists and is a valid video format.")
 
     # Define the lower and upper bounds for the washer's color in HSV space
     # These values need to be fine-tuned based on the actual washer color

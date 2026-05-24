@@ -24,7 +24,18 @@ def live_track(tracker, video_src, hilo_length_cm=30, area_condition="sin_hojas"
     # Create output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
 
-    video_source = int(video_src) if isinstance(video_src, str) and video_src.isdigit() else video_src
+    # Normalize video source
+    video_source = video_src
+    if isinstance(video_src, str):
+        # Check if it's a camera index (single digit or integer string)
+        if video_src.isdigit():
+            video_source = int(video_src)
+        else:
+            # It's a file path - validate it exists
+            if not os.path.exists(video_src):
+                raise FileNotFoundError(f"Video file not found: {video_src}\nPlease check the file path and try again.")
+            video_source = video_src
+    
     roi = detect_object(video_source)
     if roi is None:
         raise RuntimeError("ROI detection failed or was cancelled.")
